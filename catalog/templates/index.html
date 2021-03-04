@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+<title>Oldtown Books Home</title>
+{% endblock %}
+{% block content %}
+  <br><br>
+<div class="content">
+  <div class= "row" >
+    {% for i in books %}
+    <div class="col-lg-3">
+        <div class = "thumbnail" >
+          <a href= "{{ i.get_absolute_url }}"> <img class="image" src= "{{ i.image.url }}" style = "width:200px; height:320px;
+            display:block; margin:auto;" /></a>
+        </div>
+            <hr style="width:220px;">
+            <div class="cartview">
+            <button data-book= "{{i.id}}" data-action="add" class="btn btn-outline-success add-btn update-cart" style=>Add to Cart</button>
+            <a class="btn btn-outline-info" href="{{ i.get_absolute_url }}">View</a>
+            <h5 style="display:inline-block;"><strong>${{ i.price }}</strong></h5></div>
+            <hr style="width:220px;">
+          </div>
+      {% endfor %}
+  </div>
+</div>
+{% endblock %}

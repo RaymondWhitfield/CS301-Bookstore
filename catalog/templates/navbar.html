@@ -1,0 +1,29 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'index' %}">Oldtown Books</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <!--<li class="nav-item">
+          <a class="nav-link" href="{% url 'books' %}">Books</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'author' %}">Authors</a>
+        </li>   -->     
+      </ul>
+      <div class="form-inline my-2 my-lg-0">
+        <a href= "{% url 'order' %}"><img id= "cart" src= "{% static '/images/cart.png' %}"> </a>
+        <p id= "cart-total">{{cartItems}}</p>
+        <li style="color:white;list-style-type:none;margin-left:5px;margin-right:5px;">Welcome back, {{user.customer}}!</li>
+        <button class="btn btn-sm btn-outline-primary" type="button"><a href="{% url 'loginUser' %}">Login</a></button>
+        <button class="btn btn-sm btn-outline-secondary" type="button"><a href="{% url 'logout_view' %}">Logout</a></button>
+      </div>
+      
+      
+    </div>
+  </nav>
