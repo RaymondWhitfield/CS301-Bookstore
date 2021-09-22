@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+<title>Checkout</title>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element-checkout" id="form-wrapper">
+            <a class="btn btn-outline-dark" style="margin-bottom:10px;margin-top:10px;"  href="{% url 'order' %}"><img src="{% static 'images/leftarrow.png' %}"
+				style="width:40px;"> Return to Cart</a>
+				<!--<form action="process_order/" method="POST">
+					{% csrf_token %}
+					{{ customerForm.as_p }}
+					<input type ="submit" value="Continue">
+				</form>-->
+
+        <form id="form">
+			<div id="user-info">
+                <hr>
+                <p>Customer Information</p>
+				<div class="form-field">
+					<input required class="form-control" type="text" name="name" placeholder="Name..">
+				</div>
+				<div class="form-field">
+					<input required class="form-control" type="email" name="email" placeholder="Email..">
+				</div>
+			</div>
+					
+			<div id="shipping-info">
+			    <hr>
+			    <p>Shipping Information:</p>
+			    <hr>
+			    <div class="form-field">
+			        <input class="form-control" type="text" name="address" placeholder="Address..">
+			    </div>
+			    <div class="form-field">
+				    <input class="form-control" type="text" name="city" placeholder="City..">
+			    </div>
+			    <div class="form-field">
+				    <input class="form-control" type="text" name="state" placeholder="State..">
+			    </div>
+			    <div class="form-field">
+				    <input class="form-control" type="text" name="zip" placeholder="Zip code.."> 
+			    </div>
+						
+		    </div>
+
+		    <hr>
+		    <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+        </form>
+        <br>
+        <div class="box-element invisible " id="payment-info">
+			<small>Submit Order</small>
+			<button id="payment">Process Payment</button>
+        </div>
+		</div>
+		
+			
+	</div>
+
+
+		<div class="col-lg-6">
+        <div class="box-element-checkout">
+            <h3>Order Summary</h3>
+            <hr>
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{item.book.image.url}}"></div>
+                <div style="flex:2"><strong>{{item.book.title}}</strong></div>
+                <div style="flex:1"><strong>${{item.book.price|floatformat:2}}</strong></div>
+                <div style="flex:1"><strong>{{item.quantity}}</strong></div>
+                
+    
+        </div>
+        <hr>
+        {% endfor %}
+        <h5>Items:  {{order.get_cart_items}}</h5>
+        <h5>Total:  ${{order.get_cart_total|floatformat:2}}</h5>
+    </div>
+</div>
+
+<script type="text/javascript">
+	var form = document.getElementById('form')
+
+	form.addEventListener('submit', function(e){
+		e.preventDefault()
+		console.log('Form submitted')
+		document.getElementById('form-button').classList.add('invisible')
+		document.getElementById('payment-info').classList.remove('invisible')
+		
+	})
+
+	var total = '{{order.get_cart_total}}'
+
+	document.getElementById('payment').addEventListener('click', function(e){
+		submitFormData()
+	})
+
+	if(user != 'AnonymousUser'){
+		document.getElementById('user-info').innerHTML = ''
+	}
+	function submitFormData(){
+		console.log('Payment button clicked')
+
+		var userFormData = {
+			'name': null,
+			'email': null,
+			'total': total,
+		}
+		var shippingInfo = {
+			'address': form.address.value,
+			'city': form.city.value,
+			'state': form.state.value,
+			'zip': form.zip.value,
+		}
+
+		if(user == 'AnonymousUser'){
+			userFormData.name = form.name.value
+			userFormData.email = form.email.value
+		}	
+		var url = 'process_order/'
+		fetch(url, {
+			method:'POST',
+			headers:{
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCookie('csrftoken'),
+			},
+			body:JSON.stringify({'form':userFormData,'shipping':shippingInfo})
+		})
+		.then((response) => {response.json()})
+		.then((data) => {
+			console.log('Success:', data);
+			alert('Order completed');
+			window.location.href = "{% url 'index' %}"
+		})
+	}
+</script>
+{% endblock %}
